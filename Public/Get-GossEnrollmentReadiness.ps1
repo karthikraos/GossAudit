@@ -136,7 +136,7 @@ function Get-GossEnrollmentReadiness
         if ($avProduct)
         {
             $avProduct | ForEach-Object {
-                Write-Warning -WarningVariable WarningPresent "An alternate AV product has been detected ($($_.DisplayName))"
+                Write-Warning -WarningVariable WarningPresent "An alternate AV product has been detected. Please remove prior to enrollment."
             }
         }
 
