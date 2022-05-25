@@ -130,13 +130,21 @@ function Get-GossEnrollmentReadiness
             $SophosServices = $SophosServicesPresent.Name -join ", "
             Write-Warning -WarningVariable WarningPresent "Sophos services detected. Please remove prior to enrollment. ($($SophosServices))"
         }
+        
+        $PossibleAntiVirusServices = Get-Service $AV_SERVICES -ErrorAction SilentlyContinue
+        if ($PossibleAntiVirusServices)
+        {
+            $PossibleAntiVirusServices | ForEach-Object {
+                Write-Warning -WarningVariable WarningPresent "An alternate AV product has been detected ($($_.DisplayName))"
+            }
+        }
 
         $avProduct = get-wmiobject -class "Win32_Product" -namespace "root\cimv2" `
               -computername "." -filter "Name like '%antivirus%'"
         if ($avProduct)
         {
             $avProduct | ForEach-Object {
-                Write-Warning -WarningVariable WarningPresent "An alternate AV product has been detected. Please remove prior to enrollment."
+                Write-Warning -WarningVariable WarningPresent "An AV product has been detected. Please remove prior to enrollment."
             }
         }
 
